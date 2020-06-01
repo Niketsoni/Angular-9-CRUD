@@ -1,0 +1,320 @@
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3>{{ pageTitle }}</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group col-12">
+              <input
+                id="fullName"
+                type="text"
+                class="form-control"
+                formControlName="fullName"
+                placeholder="Full Name"
+                required
+                [ngClass]="{
+                  'is-invalid': formErrors.fullName
+                }"
+                (blur)="logValidationErrors()"
+              />
+              <!-- <div class="text-right">
+                <span>{{ count }}</span>
+              </div> -->
+              <div class="invalid-feedback" *ngIf="formErrors.fullName">
+                {{ formErrors.fullName }}
+              </div>
+            </div>
+            <div class="form-group col-12">
+              <h6>Contact Preference</h6>
+              <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="contactPreference"
+                    value="email"
+                    formControlName="contactPreference"
+                  />Email
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="contactPreference"
+                    value="phone"
+                    formControlName="contactPreference"
+                  />Phone
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" formGroupName="emailGroup">
+            <div class="form-group col-12">
+              <input
+                id="email"
+                type="text"
+                class="form-control"
+                formControlName="email"
+                placeholder="Email Address"
+                [ngClass]="{
+                  'is-invalid': formErrors.email
+                }"
+                (blur)="logValidationErrors()"
+              />
+              <div class="invalid-feedback" *ngIf="formErrors.email">
+                {{ formErrors.email }}
+              </div>
+            </div>
+            <div class="form-group col-12">
+              <input
+                id="confirmEmail"
+                type="text"
+                class="form-control"
+                formControlName="confirmEmail"
+                placeholder="Confirm Email Address"
+                [ngClass]="{
+                  'is-invalid': formErrors.confirmEmail
+                }"
+                (blur)="logValidationErrors()"
+              />
+
+              <!-- <div
+                class="invalid-feedback"
+                *ngIf="formErrors.confirmEmail || formErrors.emailGroup"
+              >
+                {{
+                  formErrors.confirmEmail
+                    ? formErrors.confirmEmail
+                    : formErrors.emailGroup
+                }}
+              </div> -->
+              <div class="invalid-feedback" *ngIf="formErrors.confirmEmail">
+                {{ formErrors.confirmEmail }}
+              </div>
+              <div class="invalid-feedback" *ngIf="formErrors.emailGroup">
+                {{ formErrors.emailGroup }}
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-12">
+              <input
+                id="phone"
+                type="text"
+                class="form-control"
+                formControlName="phone"
+                placeholder="Phone"
+                [ngClass]="{
+                  'is-invalid': formErrors.phone
+                }"
+                (blur)="logValidationErrors()"
+              />
+              <div class="invalid-feedback" *ngIf="formErrors.phone">
+                {{ formErrors.phone }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Form array for skills -->
+          <div class="bg-gray my-2 p-3">
+            <div class="form-row">
+              <div class="col-12">
+                <h6>Skills</h6>
+              </div>
+            </div>
+            <div
+              formArrayName="skills"
+              *ngFor="let skill of skillsForms.controls; let i = index"
+            >
+              <div [formGroupName]="i">
+                <hr *ngIf="i > 0" />
+                <div class="form-row">
+                  <div class="form-group col-5">
+                    <input
+                      id="{{ 'skillName' + i }}"
+                      type="text"
+                      class="form-control"
+                      formControlName="skillName"
+                      placeholder="Skill"
+                      [ngClass]="{
+                        'is-invalid':
+                          skill.get('skillName').invalid &&
+                          skill.get('skillName').touched
+                      }"
+                    />
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="
+                        skill.get('skillName').errors?.required &&
+                        skill.get('skillName').touched
+                      "
+                    >
+                      Skill name is required
+                    </div>
+                  </div>
+                  <div class="form-group col-5">
+                    <input
+                      id="{{ 'experience' + i }}"
+                      type="text"
+                      class="form-control"
+                      formControlName="experience"
+                      placeholder="Experience"
+                      [ngClass]="{
+                        'is-invalid':
+                          skill.get('experience').invalid &&
+                          skill.get('experience').touched
+                      }"
+                    />
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="
+                        skill.get('experience').errors?.required &&
+                        skill.get('experience').touched
+                      "
+                    >
+                      Experience is required
+                    </div>
+                  </div>
+                  <div class="col-2" *ngIf="skillsForms.controls.length > 1">
+                    <button
+                      class="btn btn-danger"
+                      (click)="removeSkillButtonClick(i)"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  <div
+                    class="form-group col-12"
+                    [ngClass]="{
+                      'was-validated':
+                        skill.get('proficiency').errors?.required &&
+                        skill.get('proficiency').touched
+                    }"
+                  >
+                    <h6>Proficiency</h6>
+                    <div class="form-check form-check-inline">
+                      <label class="form-check-label">
+                        <input
+                          type="radio"
+                          class="form-check-input"
+                          value="begineer"
+                          formControlName="proficiency"
+                        />Begineer
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <label class="form-check-label">
+                        <input
+                          type="radio"
+                          class="form-check-input"
+                          value="intermediate"
+                          formControlName="proficiency"
+                        />Intermediate
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <label class="form-check-label">
+                        <input
+                          type="radio"
+                          class="form-check-input"
+                          value="advanced"
+                          formControlName="proficiency"
+                        />Advanced
+                      </label>
+                    </div>
+                    <div
+                      class="text-danger mt-2"
+                      *ngIf="
+                        skill.get('proficiency').errors?.required &&
+                        skill.get('proficiency').touched
+                      "
+                    >
+                      <small>
+                        Proficiency is required
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-12">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="addSkillButtonClick()"
+                  [disabled]="employeeForm.get('skills').invalid"
+                >
+                  Add another Skill
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button
+            class="btn btn-primary mr-3"
+            type="submit"
+            [disabled]="employeeForm.invalid"
+          >
+            Save
+          </button>
+          <!-- <button
+            class="btn btn-primary mr-3"
+            type="button"
+            (click)="onLoadData()"
+          >
+            Load Date
+          </button> -->
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="onLoadValidate()"
+          >
+            Check Validation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<section class="my-3">
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table class="table table-bordered table-dark">
+          <thead>
+            <tr>
+              <th>FormGroup</th>
+              <th>FormControl (fullName)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                touched : {{ employeeForm.touched }} <br />
+                dirty : {{ employeeForm.dirty }} <br />
+                valid : {{ employeeForm.valid }} <br />
+                Form Values :
+                <pre class="text-white">{{ employeeForm.value | json }}</pre>
+                Form Validation Messages :
+                <pre class="text-white">{{ formErrors | json }}</pre>
+              </td>
+              <td>
+                touched : {{ employeeForm.get("fullName").touched }} <br />
+                dirty : {{ employeeForm.get("fullName").dirty }} <br />
+                valid : {{ employeeForm.get("fullName").valid }} <br />
+                FullName Value : {{ employeeForm.get("fullName").value }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
